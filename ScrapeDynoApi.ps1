@@ -35,10 +35,11 @@ while ($LastPage -ge $Page) {
                 $ModTag = $Action.mod.username
             }
             if ($null -eq $Action.user.discriminator -or 0 -eq $Action.user.discriminator) {
-                $UserTag = $Action.user.username + "#" + $Action.user.discriminator
+                $UserTag = $Action.user.username
             }
             else {
-                $UserTag = $Action.user.username
+                $UserTag = $Action.user.username + "#" + $Action.user.discriminator
+
             }
             $Logs.Add(@{
                     caseId    = $Action.caseNum
