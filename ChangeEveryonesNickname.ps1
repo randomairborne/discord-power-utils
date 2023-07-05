@@ -15,7 +15,7 @@ if ($null -eq $DiscordToken) {
 $Headers = @{"authorization" = "Bot $DiscordToken"; "user-agent" = "powershellcord/7.3 (valk@randomairborne.dev)" }
 $Payload = @{"nick" = $Nick } | ConvertTo-Json
 
-foreach ($UserId in Get-Content .\users.txt) {
+foreach ($UserId in Get-Content ./Input/Users.txt) {
     try {
         $Uri = "https://discord.com/api/v10/guilds/$GuildId/members/$UserId"
         $Response = Invoke-WebRequest -URI $Uri -Method "PATCH" -Headers $Headers -Body $Payload

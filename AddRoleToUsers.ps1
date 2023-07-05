@@ -23,7 +23,7 @@ else {
 
 $Headers = @{"authorization" = "Bot $DiscordToken"; "user-agent" = "powershellcord/7.3 (valk@randomairborne.dev)" }
 
-foreach ($UserId in Get-Content .\users.txt) {
+foreach ($UserId in Get-Content ./Input/Users.txt) {
     try {
         $Response = Invoke-WebRequest -URI "https://discord.com/api/v10/guilds/$GuildId/members/$UserId/roles/$RoleId" -Method $Method -Headers $Headers
         Write-Output "Added role $RoleId to $UserId"
