@@ -1,6 +1,6 @@
-# discord-power-utils
+# discord-powertools
 
-discord-power-utils is a collection of powershell scripts to manage your discord server en masse.
+discord-powertools is a collection of powershell scripts to manage your discord server en masse.
 
 ## Why powershell?
 
