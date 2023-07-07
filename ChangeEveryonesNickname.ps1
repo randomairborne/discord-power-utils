@@ -2,7 +2,9 @@ param(
     [Parameter(mandatory = $true)]
     [UInt64]$GuildId,
     [Parameter(mandatory = $false)]
-    [UInt64]$Nick
+    [UInt64]$Nick,
+    [Parameter(mandatory = $false)]
+    [string]$InputFile = "./Input/NicknameList.txt"
 )
 
 . "$PSScriptRoot/Vars.ps1"
@@ -15,7 +17,7 @@ if ($null -eq $DiscordToken) {
 $Headers = @{"authorization" = "Bot $DiscordToken"; "user-agent" = "powershellcord/7.3 (valk@randomairborne.dev)" }
 $Payload = @{"nick" = $Nick } | ConvertTo-Json
 
-foreach ($UserId in Get-Content ./Input/Users.txt) {
+foreach ($UserId in Get-Content $InputFile) {
     try {
         $Uri = "https://discord.com/api/v10/guilds/$GuildId/members/$UserId"
         $Response = Invoke-WebRequest -URI $Uri -Method "PATCH" -Headers $Headers -Body $Payload

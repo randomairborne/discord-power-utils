@@ -1,18 +1,18 @@
 param(
     [Parameter(mandatory = $true)]
     [UInt64]$GuildId,
-    [Parameter(mandatory = $true)]
-    [UInt64]$LastLevel
+    [Parameter(mandatory = $false)]
+    [UInt64]$LastLevel = 0
 )
 
 
 $Page = 0
 $Players = [System.Collections.Generic.List[System.Collections.Hashtable]]::new()
-$CurrentLevel = 1000000000000
+$CurrentLevel = $null
 
 New-Item -ItemType Directory "./Output/" -Force | Out-Null
 
-while ($CurrentLevel -ge $LastLevel) {
+do {
     try {
         $Uri = "https://mee6.xyz/api/plugins/levels/leaderboard/" + $GuildId + "?limit=1000&page=$Page"
         $Response = Invoke-WebRequest -URI $Uri
@@ -34,6 +34,6 @@ while ($CurrentLevel -ge $LastLevel) {
         Write-Warning $_
     }
     Start-Sleep -Seconds 2
-}
+} while ($CurrentLevel -ge $LastLevel)
 Write-Information "Done, data written to ./Output/Mee6Leaderboard.json"
 $Players | ConvertTo-Json -depth 100 | Out-File -Encoding utf8 "./Output/Mee6Leaderboard.json"

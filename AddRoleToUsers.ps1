@@ -4,7 +4,9 @@ param(
     [Parameter(mandatory = $true)]
     [UInt64]$RoleId,
     [Parameter(mandatory = $false)]
-    [switch]$Remove
+    [switch]$Remove,
+    [Parameter(mandatory = $false)]
+    [string]$InputFile = "./Input/RoleList.txt"
 )
 
 . "$PSScriptRoot/Vars.ps1"
@@ -23,7 +25,7 @@ else {
 
 $Headers = @{"authorization" = "Bot $DiscordToken"; "user-agent" = "powershellcord/7.3 (valk@randomairborne.dev)" }
 
-foreach ($UserId in Get-Content ./Input/Users.txt) {
+foreach ($UserId in Get-Content $InputFile) {
     try {
         $Response = Invoke-WebRequest -URI "https://discord.com/api/v10/guilds/$GuildId/members/$UserId/roles/$RoleId" -Method $Method -Headers $Headers
         Write-Output "Added role $RoleId to $UserId"
