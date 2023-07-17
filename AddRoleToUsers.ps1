@@ -27,11 +27,18 @@ $Headers = @{"authorization" = "Bot $DiscordToken"; "user-agent" = "powershellco
 
 foreach ($UserId in Get-Content $InputFile) {
     try {
-        $Response = Invoke-WebRequest -URI "https://discord.com/api/v10/guilds/$GuildId/members/$UserId/roles/$RoleId" -Method $Method -Headers $Headers
-        Write-Output "Added role $RoleId to $UserId"
+        $Response = Invoke-WebRequest -URI "https://discord.com/api/v10/guilds/$GuildId/members/$UserId/roles/$RoleId" -Method $Method -Headers $Headers -SkipHttpErrorCheck
+        $Status = $Response.StatusCode
+        if ($Status.Equals(204)) {
+            Write-Output "Modified role $RoleId on $UserId"
+        } elseif ($Status.Equals(404)) {
+            Write-Output "User $UserId is not in server $GuildId"
+        } else {
+            Write-Error "Failed to modify role $RoleId on $UserId"
+        }
     }
     catch {
-        Write-Warning "Failed to add role"
+        Write-Error  "Failed to modify role $RoleId on $UserId"
         Write-Warning $_
     }
     $RatelimitRemaining = [int]($Response.Headers["x-ratelimit-remaining"][0])

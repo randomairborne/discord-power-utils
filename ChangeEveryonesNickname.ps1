@@ -21,11 +21,18 @@ foreach ($UserId in Get-Content $InputFile) {
     try {
         $Uri = "https://discord.com/api/v10/guilds/$GuildId/members/$UserId"
         $Response = Invoke-WebRequest -URI $Uri -Method "PATCH" -Headers $Headers -Body $Payload
+        $Status = $Response.StatusCode
         $Data = $Response | ConvertFrom-Json
-        Write-Output "Added role $RoleId to $($Data.username) ($($UserId))"
+        if ($Status.Equals(204)) {
+            Write-Output "Changed nickname of $($UserId) to $($Data.username) ($($UserId))"
+        } elseif ($Status.Equals(404)) {
+            Write-Output "User $UserId is not in server $GuildId"
+        } else {
+            Write-Error "Failed to modify nickname $RoleId on $UserId"
+        }
     }
     catch {
-        Write-Warning "Failed to add role"
+        Write-Error  "Failed to modify nickname $RoleId on $UserId"
         Write-Warning $_
     }
     $RatelimitRemaining = [int]($Response.Headers["x-ratelimit-remaining"][0])
