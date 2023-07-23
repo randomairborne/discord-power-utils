@@ -23,6 +23,8 @@ do {
                     xp       = $Player.xp
                     level    = $Player.level
                     username = $Player.username
+                    avatar   = $Player.avatar
+                    rank     = $Players.Count
                 })
         }
         $CurrentLevel = $Data.players[-1].level
