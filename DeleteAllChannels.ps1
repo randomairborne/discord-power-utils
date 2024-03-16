@@ -6,7 +6,7 @@ param(
 . "$PSScriptRoot/Vars.ps1"
 
 if ($null -eq $DiscordToken) {
-    Write-Error -Message 'you must set $DiscordToken in Vars.ps1 to use AddRoleToUsers'
+    Write-Error -Message 'you must set $DiscordToken in Vars.ps1 to use DeleteAllChannels'
     Exit 1
 }
 
