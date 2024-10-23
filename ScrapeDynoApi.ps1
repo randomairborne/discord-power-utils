@@ -12,48 +12,20 @@ if ($null -eq $DynoSid) {
 
 $Page = 0
 $LastPage = 1
-$Logs = [System.Collections.Generic.List[System.Collections.Hashtable]]::new()
 
 $Headers = @{
     Cookie = "dynobot.sid=$DynoSid"
 }
 
-New-Item -ItemType Directory "./Output/" -Force | Out-Null
+New-Item -ItemType Directory "./Output/DynoModlogHistory/" -Force | Out-Null
 
 while ($LastPage -ge $Page) {
     try {
         $Uri = "https://dyno.gg/api/modules/$GuildId/modlogs?pageSize=50&page=$Page"
         $Response = Invoke-WebRequest -URI $Uri -Headers $Headers
         $Data = $Response | ConvertFrom-Json
-        $ModTag = ""
-        $UserTag = ""
-        foreach ($Action in $Data.logs) {
-            if ($null -eq $Action.mod.discriminator -or 0 -eq $Action.mod.discriminator) {
-                $ModTag = $Action.mod.username + "#" + $Action.mod.discriminator
-            }
-            else {
-                $ModTag = $Action.mod.username
-            }
-            if ($null -eq $Action.user.discriminator -or 0 -eq $Action.user.discriminator) {
-                $UserTag = $Action.user.username
-            }
-            else {
-                $UserTag = $Action.user.username + "#" + $Action.user.discriminator
-
-            }
-            $Logs.Add(@{
-                    caseId    = $Action.caseNum
-                    type      = $Action.type
-                    modId     = $Action.mod.id
-                    modName   = $ModTag
-                    userId    = $Action.user.id
-                    userName  = $UserTag
-                    reason    = $Action.reason
-                    createdAt = $Action.createdAt
-                })
-        }
-        $LogListLength = $Logs.Count
-        Write-Output "Got page $Page, total of $LogListLength cases"
+        $Response | Out-File -Encoding utf8 "./Output/DynoModlogHistory/$Page.json
+        Write-Output "Got page $Page"
         $LastPage = $Data.pageCount - 1
         $Page = $Page + 1
     }
@@ -63,5 +35,4 @@ while ($LastPage -ge $Page) {
     }
     Start-Sleep -Seconds 2
 }
-Write-Information "Done, data written to ./Output/DynoModlogHistory.json"
-$Logs | ConvertTo-Json -depth 100 | Out-File -Encoding utf8 "./Output/DynoModlogHistory.json"
+Write-Information "Done, data written to ./Output/DynoModlogHistory/*.json"
